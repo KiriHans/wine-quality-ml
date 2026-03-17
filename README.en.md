@@ -267,7 +267,7 @@ This is because it has the highest F1-score, best AUC performance, it has a tran
 ```
 wine-quality-ml/
 │
-├── caso_de_estudio.ipynb
+├── analisis_de_calidad_del_vino.ipynb
 │
 ├── images/
 │   ├── confusion_matrix.png

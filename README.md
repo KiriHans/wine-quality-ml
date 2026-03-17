@@ -278,7 +278,7 @@ Esto se debe a que tiene el mayor F1-score, el mejor rendimiento en AUC, posee r
 
 wine-quality-ml/
 │
-├── caso_de_estudio.ipynb
+├── analisis_de_calidad_del_vino.ipynb
 │
 ├── images/
 │   ├── confusion_matrix.png
