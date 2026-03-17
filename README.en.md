@@ -191,9 +191,8 @@ Because the predictors are continuous variables, the Gaussian Naive Bayes varian
 
 This model assumes that:
 
-```
-P(x_j | C = c_k) ~ N(μ_jk , σ²_jk)
-```
+$P(x_j \mid C = c_k) \sim \mathcal{N}(\mu_{jk}, \sigma^2_{jk})$
+
 
 where each feature follows a normal distribution within each class.
 

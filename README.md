@@ -201,11 +201,8 @@ Debido a que las variables predictoras son continuas, se utilizó la variante Ga
 
 Este modelo asume que:
 
-```
+$P(x_j \mid C = c_k) \sim \mathcal{N}(\mu_{jk}, \sigma^2_{jk})$
 
-P(x_j | C = c_k) ~ N(μ_jk , σ²_jk)
-
-```
 
 donde cada variable sigue una distribución normal dentro de cada clase.
 
