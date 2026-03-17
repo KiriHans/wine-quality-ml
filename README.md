@@ -1,41 +1,41 @@
-# Wine Quality Classification using Decision Trees and Naive Bayes
+# Clasificación de Calidad de Vinos usando Árboles de Decisión y Naive Bayes
 
-## Project Overview
+## Descripción del Proyecto
 
-This project analyzes physicochemical properties of wines to predict whether a wine is high quality or standard quality using machine learning classification models.
+Este proyecto analiza las propiedades fisicoquímicas de los vinos para predecir si un vino es de alta calidad o de calidad estándar utilizando modelos de clasificación de aprendizaje automático.
 
-The analysis follows a complete machine learning workflow, including:
+El análisis sigue un flujo completo de trabajo en machine learning, que incluye:
 
-* Exploratory Data Analysis (EDA)
-* Data quality verification
-* Feature analysis and correlation study
-* Binary target transformation
-* Model training
-* Hyperparameter tuning
-* Model comparison
-* Error analysis
-* ROC and AUC evaluation
+* Análisis Exploratorio de Datos (EDA)
+* Verificación de la calidad de los datos
+* Análisis de variables y estudio de correlaciones
+* Transformación binaria de la variable objetivo
+* Entrenamiento de modelos
+* Ajuste de hiperparámetros
+* Comparación de modelos
+* Análisis de errores
+* Evaluación mediante ROC y AUC
 
-Two main models are evaluated:
+Se evalúan dos modelos principales:
 
-* Decision Tree Classifier
+* Árbol de Decisión
 * Gaussian Naive Bayes
 
-The objective is to determine which model is most suitable for a wine quality control system in a winery.
+El objetivo es determinar qué modelo es más adecuado para un sistema de control de calidad del vino en una bodega.
 
-## Dataset
+## Conjunto de Datos
 
-The dataset used in this project comes from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/186/wine+quality)
+El conjunto de datos utilizado en este proyecto proviene del [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/186/wine+quality)
 
-The dataset contains physicochemical measurements of red wine samples from northern Portugal.
+El dataset contiene mediciones fisicoquímicas de muestras de vino tinto provenientes del norte de Portugal.
 
-### Dataset characteristics
+### Características del dataset
 
-* 6497 observations
-* 11 predictive variables
-* 1 target variable (`quality`)
+* 6497 observaciones
+* 11 variables predictoras
+* 1 variable objetivo (`quality`)
 
-Predictor variables include:
+Las variables predictoras incluyen:
 
 * fixed_acidity
 * volatile_acidity
@@ -49,176 +49,188 @@ Predictor variables include:
 * sulphates
 * alcohol
 
-The original quality score ranges from 0 to 10.
+La puntuación original de calidad varía entre 0 y 10.
 
-For this project, the problem is converted into a binary classification problem:
+Para este proyecto, el problema se convierte en un problema de clasificación binaria:
 
-| Class | Meaning          |
-| ----- | ---------------- |
-| 0     | Standard Quality |
-| 1     | High Quality     |
+| Clase | Significado          |
+| ----- | -------------------- |
+| 0     | Calidad Estándar     |
+| 1     | Alta Calidad         |
 
-High-quality wines are defined as:
+Los vinos de alta calidad se definen como:
 
 ```
+
 quality >= 7
+
 ```
 
-## Data Loading
+## Carga de Datos
 
-The dataset is retrieved programmatically using the Python package `ucimlrepo`, ensuring reproducibility.
+El dataset se obtiene de forma programática utilizando el paquete de Python `ucimlrepo`, garantizando la reproducibilidad.
 
-## Exploratory Data Analysis
+## Análisis Exploratorio de Datos
 
-The exploratory analysis focuses on evaluating data quality and statistical properties.
+El análisis exploratorio se centra en evaluar la calidad de los datos y sus propiedades estadísticas.
 
-The following aspects were examined:
+Se examinaron los siguientes aspectos:
 
-### Data structure
+### Estructura de los datos
 
-* All predictor variables are numeric
-* No missing values were found
-* The target variable (`quality`) is categorical with integer values
+* Todas las variables predictoras son numéricas
+* No se encontraron valores faltantes
+* La variable objetivo (`quality`) es categórica con valores enteros
 
-### Completeness
+### Completitud
 
-The dataset contains no missing values, so no imputation is required.
+El dataset no contiene valores faltantes, por lo que no se requiere imputación.
 
-### Consistency
+### Consistencia
 
-The `quality` variable contains values within the expected range defined in the dataset documentation.
+La variable `quality` contiene valores dentro del rango esperado definido en la documentación del dataset.
 
-### Distribution analysis
+### Análisis de distribución
 
-Histograms and density plots were used to study the distribution of each feature.
+Se utilizaron histogramas y gráficos de densidad para estudiar la distribución de cada variable.
 
-Several variables exhibit positive skewness, including:
+Varias variables presentan asimetría positiva, incluyendo:
 
 * volatile_acidity
 * residual_sugar
 * total_sulfur_dioxide
 
-## Class Imbalance
+## Desbalance de Clases
 
-After transforming the target variable into binary classification, the dataset shows class imbalance:
+Después de transformar la variable objetivo en una clasificación binaria, el dataset muestra desbalance de clases:
 
-* 80% Standard Quality
-* 20% High Quality
+* 80% Calidad Estándar
+* 20% Alta Calidad
 
-This imbalance makes accuracy an insufficient evaluation metric, so the analysis focuses on:
+Este desbalance hace que la exactitud (accuracy) sea una métrica insuficiente para la evaluación, por lo que el análisis se centra en:
 
 * Precision
 * Recall
 * F1-score
 * ROC-AUC
 
-## Correlation Analysis
+## Análisis de Correlación
 
-A correlation matrix was used to identify relationships between variables.
+Se utilizó una matriz de correlación para identificar relaciones entre variables.
 
-Variables most correlated with wine quality include:
+Las variables más correlacionadas con la calidad del vino incluyen:
 
 * Alcohol
 * Density
 * Volatile acidity
 * Chlorides
 
-Alcohol content showed the strongest positive relationship with wine quality.
+El contenido de alcohol mostró la relación positiva más fuerte con la calidad del vino.
 
-## Data Preprocessing
+## Preprocesamiento de Datos
 
-The preprocessing stage includes:
+La etapa de preprocesamiento incluye:
 
-* Binary transformation of the target variable
-* Train-test split
-* Feature scaling for Naive Bayes
-* Handling class imbalance using:
+* Transformación binaria de la variable objetivo
+* División en conjuntos de entrenamiento y prueba
+* Escalado de características para Naive Bayes
+* Manejo del desbalance de clases utilizando:
 
 ```
+
 class_weight = 'balanced'
-```
-
-for the Decision Tree models.
-
-
-## Machine Learning Models
-
-### Decision Tree Classifier
-
-Decision Trees are interpretable (white-box) models that classify samples using hierarchical decision rules.
-
-Three configurations were explored:
-
-#### 1. Baseline Decision Tree
-
-A shallow tree with:
 
 ```
+
+para los modelos de Árbol de Decisión.
+
+
+## Modelos de Machine Learning
+
+### Clasificador Árbol de Decisión
+
+Los Árboles de Decisión son modelos interpretables (caja blanca) que clasifican muestras utilizando reglas de decisión jerárquicas.
+
+Se exploraron tres configuraciones:
+
+#### 1. Árbol de Decisión Base
+
+Un árbol poco profundo con:
+
+```
+
 max_depth = 3
+
 ```
 
-to understand the most important decision rules.
+para comprender las reglas de decisión más importantes.
 
-#### 2. Pre-Pruned Decision Tree
+#### 2. Árbol de Decisión con Pre-Poda
 
-Hyperparameters were optimized by analyzing performance across different values of:
+Los hiperparámetros fueron optimizados analizando el rendimiento para diferentes valores de:
 
 * `max_depth`
 * `min_samples_leaf`
 
-The best configuration found were:
+La mejor configuración encontrada fue:
 
 ```
+
 max_depth = 5
 min_samples_leaf = 60
-```
-
-#### 3. Post-Pruned Decision Tree
-
-Cost-complexity pruning was applied using the parameter:
 
 ```
+
+#### 3. Árbol de Decisión con Post-Poda
+
+Se aplicó poda por complejidad de costo utilizando el parámetro:
+
+```
+
 ccp_alpha = 0.00238
+
 ```
 
-This simplified the tree while maintaining strong predictive performance.
+Esto simplificó el árbol manteniendo un buen rendimiento predictivo.
 
 ### Gaussian Naive Bayes
 
-Naive Bayes is a probabilistic classifier based on the Bayes Theorem.
+Naive Bayes es un clasificador probabilístico basado en el Teorema de Bayes.
 
-Because the predictors are continuous variables, the Gaussian Naive Bayes variant was used.
+Debido a que las variables predictoras son continuas, se utilizó la variante Gaussian Naive Bayes.
 
-This model assumes that:
+Este modelo asume que:
 
 ```
+
 P(x_j | C = c_k) ~ N(μ_jk , σ²_jk)
+
 ```
 
-where each feature follows a normal distribution within each class.
+donde cada variable sigue una distribución normal dentro de cada clase.
 
-Although computationally efficient, the model assumes conditional independence between features.
+Aunque es computacionalmente eficiente, el modelo asume independencia condicional entre las variables.
 
-## Model Evaluation
+## Evaluación de Modelos
 
-Due to class imbalance, performance was evaluated using:
+Debido al desbalance de clases, el rendimiento se evaluó utilizando:
 
 * Precision
 * Recall
 * F1-score
-* Confusion matrix
-* ROC curve
+* Matriz de confusión
+* Curva ROC
 * AUC
 
-## Performance Comparison
+## Comparación de Rendimiento
 
-### Decision Tree (Pre-Pruning)
+### Árbol de Decisión (Pre-Poda)
 
 Precision: 0.398
 Recall: 0.796
 F1-score: 0.531
 
-### Decision Tree (Post-Pruning)
+### Árbol de Decisión (Post-Poda)
 
 Precision: 0.402
 Recall: 0.804
@@ -230,42 +242,43 @@ Precision: 0.423
 Recall: 0.643
 F1-score: 0.510
 
-Decision Trees achieved higher recall, meaning they detect more high-quality wines.
+Los Árboles de Decisión lograron un mayor recall, lo que significa que detectan más vinos de alta calidad.
 
 
-## ROC Curve and AUC
+## Curva ROC y AUC
 
-The ROC curve evaluates the trade-off between true positive rate and false positive rate.
+La curva ROC evalúa el equilibrio entre la tasa de verdaderos positivos y la tasa de falsos positivos.
 
-AUC results:
+Resultados de AUC:
 
-| Model                        | AUC       |
+| Modelo                       | AUC       |
 | ---------------------------- | --------- |
-| Decision Tree (Pre-Pruning)  | 0.751     |
-| Decision Tree (Post-Pruning) | 0.756     |
+| Árbol de Decisión (Pre-Poda) | 0.751     |
+| Árbol de Decisión (Post-Poda)| 0.756     |
 | Gaussian Naive Bayes         | 0.714     |
 
-Decision Trees show better class discrimination capability.
+Los Árboles de Decisión muestran una mejor capacidad de discriminación entre clases.
 
-## Error Analysis
+## Análisis de Errores
 
-Two classification errors were considered:
+Se consideraron dos tipos de errores de clasificación:
 
-**False Positive**: Standard wine classified as high quality.
+**Falso Positivo**: Vino estándar clasificado como de alta calidad.
 
-**False Negative**: High-quality wine classified as standard.
+**Falso Negativo**: Vino de alta calidad clasificado como estándar.
 
-In a winery context, false positives are more costly, since they may result in selling lower-quality wine as premium, potentially harming the brand’s reputation.
+En el contexto de una bodega, los falsos positivos son más costosos, ya que pueden resultar en vender vinos de menor calidad como premium, lo que podría dañar la reputación de la marca.
 
-## Final Recommendation
+## Recomendación Final
 
-Based on the previous analysis, the recommended model chosen was the **Decision Tree with Post-Pruning**.
-This is because it has the highest F1-score, best AUC performance, it has a transparent decision rules and it has robust performance despite the features correlations.
+Basado en el análisis previo, el modelo recomendado es el **Árbol de Decisión con Post-Poda**.
+Esto se debe a que tiene el mayor F1-score, el mejor rendimiento en AUC, posee reglas de decisión transparentes y mantiene un rendimiento robusto a pesar de las correlaciones entre las variables.
 
 
-## Repository Structure
+## Estructura del Repositorio
 
 ```
+
 wine-quality-ml/
 │
 ├── caso_de_estudio.ipynb
@@ -276,63 +289,65 @@ wine-quality-ml/
 │
 ├── README.md
 └── requirements.txt
+
 ```
 
-## Dependency Installation and Project Execution
 
-To run the notebook for this project, it is necessary to install the libraries used for data analysis, visualization, and machine learning models.
+## Instalación de Dependencias y Ejecución del Proyecto
 
-### Option 1: Using `pip` and a virtual environment (recommended)
+Para ejecutar el notebook de este proyecto es necesario instalar las librerías utilizadas para el análisis de datos, visualización y modelos de aprendizaje automático.
 
-Creating a virtual environment helps avoid dependency conflicts.
+### Opción 1: Usando `pip` y un entorno virtual (recomendado)
 
-On **Windows**:
+Crear un entorno virtual ayuda a evitar conflictos entre dependencias.
+
+En **Windows**:
 
 ```bash
 python -m venv wine-quality-ml
 wine-quality-ml\Scripts\activate
-````
+```
 
-On **Linux / macOS**:
+En **Linux / macOS**:
 
 ```bash
 python3 -m venv wine-quality-ml
 source wine-quality-ml/bin/activate
-```
-
-Once the virtual environment is activated, install the required libraries:
+````
+Una vez activado el entorno virtual, instalar las librerías necesarias:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Option 2: Using `conda`
+### Opción 2: Usando `conda`
 
-If you use Anaconda or Miniconda, you can create a dedicated environment for the project:
+Si utilizas Anaconda o Miniconda, puedes crear un entorno dedicado para el proyecto:
 
 ```bash
 conda create -n wine-quality-ml python=3.14
 conda activate wine-quality-ml
 ```
 
-Install the main libraries:
+Instalar las librerías principales:
 
 ```bash
 conda install pandas numpy scikit-learn matplotlib seaborn jupyter
 ```
 
-### Running the Notebook
+### Ejecutar el Notebook
 
-After installing the dependencies, start Jupyter Notebook:
+Después de instalar las dependencias, iniciar Jupyter Notebook:
 
 ```bash
 jupyter notebook
 ```
 
-Then open the file:
+Luego abrir el archivo:
 
 ```
 analisis_de_calidad_del_vino.ipynb
 ```
 
-and run the cells in order to reproduce the full analysis.
+y ejecutar las celdas en orden para reproducir todo el análisis.
+
