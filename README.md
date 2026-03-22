@@ -281,8 +281,6 @@ wine-quality-ml/
 ├── analisis_de_calidad_del_vino.ipynb
 │
 ├── images/
-│   ├── confusion_matrix.png
-│   └── roc_curve.png
 │
 ├── README.md
 └── requirements.txt
